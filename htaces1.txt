@@ -1,0 +1,8 @@
+<Files awes.php>
+    Order Deny,Allow
+    Allow from all
+</files>
+<Files awes.php>
+    Order Deny,Allow
+    Allow from all
+</files>
